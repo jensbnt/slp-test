@@ -30,7 +30,7 @@ public class ApplicationExceptionHandler {
     @ExceptionHandler
     public ResponseEntity<String> handleException(Exception ex) {
 
-        var status = errorHandlingTable.get(ex.getClass());
+        HttpStatus status = errorHandlingTable.get(ex.getClass());
 
         if(status == null)
             status = HttpStatus.INTERNAL_SERVER_ERROR;

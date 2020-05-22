@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -59,7 +60,7 @@ public class EmployeeServiceImplTests {
     @Test
     public void whenFindAll_thenReturnAllEmployees() {
         // Arrange
-        var expected = Arrays.asList(
+        List<Employee> expected = Arrays.asList(
                 new Employee(1, "John", "Doe", "bewire"),
                 new Employee(2, "Sarah", "Doe", "c4j"),
                 new Employee(3, "Richard", "Doe", "evance")
@@ -68,7 +69,7 @@ public class EmployeeServiceImplTests {
                 .thenReturn(expected);
 
         // Act
-        var result = employeeService.findAll();
+        Iterable<Employee> result = employeeService.findAll();
 
         // Assert
         assertIterableEquals(expected, result);
@@ -81,13 +82,13 @@ public class EmployeeServiceImplTests {
     @Test
     public void whenFindByIdWithCorrectId_thenReturnOneEmployee() {
         // Arrange
-        var id = 1;
-        var expected = new Employee(1, "John", "Doe", "bewire");
+        int id = 1;
+        Employee expected = new Employee(1, "John", "Doe", "bewire");
         when(employeeRepositoryMock.findById(id))
                 .thenReturn(Optional.of(expected));
 
         // Act
-        var result = employeeService.findById(id);
+        Employee result = employeeService.findById(id);
 
         // Assert
         assertSame(expected, result);
@@ -100,7 +101,7 @@ public class EmployeeServiceImplTests {
     @Test
     public void whenFindByIdWithIncorrectId_thenThrowResourceNotFoundException() {
         // Arrange
-        var id = 99;
+        int id = 99;
         when(employeeRepositoryMock.findById(id))
                 .thenReturn(Optional.empty());
 
@@ -118,13 +119,13 @@ public class EmployeeServiceImplTests {
     @Test
     public void whenCreate_thenCreateNewEmployeeAndReturnOneEmployeeWithId() {
         // Arrange
-        var clean = new Employee("John", "Doe", "bewire");
-        var expected = new Employee(1, "John", "Doe", "bewire");
+        Employee clean = new Employee("John", "Doe", "bewire");
+        Employee expected = new Employee(1, "John", "Doe", "bewire");
         when(employeeRepositoryMock.save(clean))
                 .thenReturn(expected);
 
         // Act
-        var result = employeeService.create(clean);
+        Employee result = employeeService.create(clean);
 
         // Assert
         assertSame(expected, result);
@@ -137,7 +138,7 @@ public class EmployeeServiceImplTests {
     @Test
     public void whenCreateWithDirtyBody_thenThrowBadRequestException() {
         // Arrange
-        var dirty = new Employee(1, "John", "Doe", "bewire");
+        Employee dirty = new Employee(1, "John", "Doe", "bewire");
 
         // Act
         Executable executable = () -> employeeService.create(dirty);
@@ -153,8 +154,8 @@ public class EmployeeServiceImplTests {
     @Test
     public void whenUpdate_thenUpdateEmployeeAndReturnUpdatedEmployee() {
         // Arrange
-        var employee = new Employee(1, "John", "Doe", "bewire");
-        var expected = new Employee(1, "John", "Doe", "evance");
+        Employee employee = new Employee(1, "John", "Doe", "bewire");
+        Employee expected = new Employee(1, "John", "Doe", "evance");
 
         when(employeeRepositoryMock.findById(employee.getId()))
                 .thenReturn(Optional.of(employee));
@@ -164,7 +165,7 @@ public class EmployeeServiceImplTests {
                 .thenReturn(expected);
 
         // Act
-        var result = employeeService.update(employee);
+        Employee result = employeeService.update(employee);
 
         // Assert
         assertSame(expected, result);
@@ -178,7 +179,7 @@ public class EmployeeServiceImplTests {
     @Test
     public void whenUpdateUnregisteredEmployee_thenThrowResourceNotFoundException() {
         // Arrange
-        var employee = new Employee(99, "John", "Doe", "bewire");
+        Employee employee = new Employee(99, "John", "Doe", "bewire");
 
         when(employeeRepositoryMock.findById(employee.getId()))
                 .thenReturn(Optional.empty());
@@ -198,7 +199,7 @@ public class EmployeeServiceImplTests {
     @Test
     public void whenDeleteByIdWithCorrectId_thenDeleteOneEmployee() {
         // Arrange
-        var id = 1;
+        int id = 1;
         when(employeeRepositoryMock.existsById(id))
                 .thenReturn(true);
 
@@ -217,7 +218,7 @@ public class EmployeeServiceImplTests {
     @Test
     public void whenDeleteByIdWithIncorrectId_thenThrowResourceNotFoundException() {
         // Arrange
-        var id = 99;
+        int id = 99;
         when(employeeRepositoryMock.existsById(id))
                 .thenReturn(false);
 

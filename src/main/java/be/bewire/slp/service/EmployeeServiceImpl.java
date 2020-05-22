@@ -40,7 +40,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public Employee findById(int id) {
         Optional<Employee> employee = employeeRepository.findById(id);
 
-        if (employee.isEmpty())
+        if (!employee.isPresent())
             throw new ResourceNotFoundException(String.format("No employee with id %d.", id));
 
         return employee.get();
@@ -69,7 +69,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Employee update(Employee employee) {
         // Check if employee exists
-        var old = findById(employee.getId());
+        Employee old = findById(employee.getId());
 
         // Preserve information
         employee.setCreated(old.getCreated());

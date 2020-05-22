@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -59,7 +60,7 @@ public class EmployeeControllerTests {
     @Test
     public void whenGetUsers_thenResponseWithUsers() throws Exception {
         // Arrange
-        var expected = Arrays.asList(
+        List<Employee> expected = Arrays.asList(
                 new Employee(1, "John", "Doe", "bewire"),
                 new Employee(2, "Sarah", "Doe", "c4j"),
                 new Employee(3, "Richard", "Doe", "evance")
@@ -87,7 +88,7 @@ public class EmployeeControllerTests {
     public void whenGetUserById_thenResponseWithOneUser() throws Exception {
         // Arrange
         int id = 1;
-        var expected = new Employee(1, "John", "Doe", "bewire");
+        Employee expected = new Employee(1, "John", "Doe", "bewire");
 
         given(service.findById(id))
                 .willReturn(expected);
@@ -130,8 +131,8 @@ public class EmployeeControllerTests {
     @Test
     public void whenCreate_thenReturnCreatedEmployee() throws Exception {
         // Arrange
-        var body = new Employee("John", "Doe", "bewire");
-        var expected = new Employee(1, "John", "Doe", "bewire");
+        Employee body = new Employee("John", "Doe", "bewire");
+        Employee expected = new Employee(1, "John", "Doe", "bewire");
 
         given(service.create(Mockito.any(Employee.class)))
                 .willReturn(expected);
@@ -155,7 +156,7 @@ public class EmployeeControllerTests {
     @Test
     public void whenCreateWithInvalidBody_thenReturn500() throws Exception {
         // Arrange
-        var body = new Employee(1, "John", "Doe", "bewire");
+        Employee body = new Employee(1, "John", "Doe", "bewire");
 
         given(service.create(Mockito.any(Employee.class)))
                 .willThrow(MalformedBodyException.class);
@@ -178,8 +179,8 @@ public class EmployeeControllerTests {
     @Test
     public void whenUpdate_thenReturnUpdatedEmployee() throws Exception {
         // Arrange
-        var body = new Employee("John", "Doe", "evance");
-        var expected = new Employee(1, "John", "Doe", "evance");
+        Employee body = new Employee("John", "Doe", "evance");
+        Employee expected = new Employee(1, "John", "Doe", "evance");
 
         given(service.update(Mockito.any(Employee.class)))
                 .willReturn(expected);
@@ -203,7 +204,7 @@ public class EmployeeControllerTests {
     @Test
     public void whenUpdateNonExistingEmployee_thenReturn404() throws Exception {
         // Arrange
-        var body = new Employee(99, "John", "Doe", "bewire");
+        Employee body = new Employee(99, "John", "Doe", "bewire");
 
         given(service.update(Mockito.any(Employee.class)))
                 .willThrow(ResourceNotFoundException.class);
@@ -226,7 +227,7 @@ public class EmployeeControllerTests {
     @Test
     public void whenUpdateWithDifferentIds_thenReturn500() throws Exception {
         // Arrange
-        var body = new Employee(1, "John", "Doe", "bewire");
+        Employee body = new Employee(1, "John", "Doe", "bewire");
 
         // Act & Assert
         mvc.perform(MockMvcRequestBuilders.put(API_URL + 99)
